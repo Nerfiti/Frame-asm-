@@ -14,10 +14,10 @@ locals @@
 
 EXIT		macro
 
-			mov ax, 4c00h
-			int 21h
+		mov ax, 4c00h
+		int 21h
 
-			endm
+		endm
 
 ;=========================================================================
 ;=========================================================================
@@ -25,58 +25,58 @@ EXIT		macro
 
 
 Start:		mov bx, 0b800h
-			mov es, bx
+		mov es, bx
 
-            mov si, 82h                 ;----------------------
-            call GetNum                 ; dx = 'x'
-            push dx                     ;----------------------
+	    	mov si, 82h             ;----------------------
+	    	call GetNum             ; dx = 'x'
+	    	push dx                 ;----------------------
 
-                                        ;----------------------
-            call GetNum                 ; dx = 'y'
-                                        ;----------------------
+					;----------------------
+	    	call GetNum             ; dx = 'y'
+					;----------------------
+	
+	    	mov di, dx              ;----------------------
+	    	shl dx, 4               ; di = dx*80
+	    	shl di, 6               ;
+	   	add di, dx              ;
+	   	pop dx                  ; di += 'x'
+	    	add di, dx              ;----------------------
 
-            mov di, dx                  ;----------------------
-            shl dx, 4                   ; di = dx*80
-            shl di, 6                   ;
-            add di, dx                  ;
-            pop dx                      ; di += 'x'
-            add di, dx                  ;----------------------
+					;----------------------
+	    	call GetNum             ; dx = width
+	   	push dx                 ;----------------------
 
-                                        ;----------------------
-            call GetNum                 ; dx = width
-            push dx                     ;----------------------
+					;----------------------
+	    	call GetNum             ; dx = height
+	   	mov cx, dx              ;----------------------
 
-                                        ;----------------------
-            call GetNum                 ; dx = height
-            mov cx, dx                  ;----------------------
-            
-                                        ;----------------------
-            call GetNum                 ; dx = frame style
-            push dx                     ;----------------------
+					;----------------------
+	    	call GetNum             ; dx = frame style
+	    	push dx                 ;----------------------
 
-                                        ;----------------------
-            call GetNum                 ; dx = color
-            add dx, offset COLORS       ;
-            mov bx, dx                  ;   COLOR PROCESSING
-            mov ah, [bx]                ;----------------------
+					;----------------------
+	    	call GetNum             ; dx = color
+	    	add dx, offset COLORS   ;
+	    	mov bx, dx              ;   COLOR PROCESSING
+	    	mov ah, [bx]            ;----------------------
 
-                                        
-            pop dx                      ;----------------------
-            push si                     ; user style ptr or msg ptr
-            cmp dx, 9                   ;
-            je USER_STYLE_PROCESSING    ;
-                                        ;   STYLE PROCESSING
-            mov si, offset STYLES       ;
-            mov bx, dx                  ;
-            shl dx, 3                   ;   dx *= 9
-            add dx, bx                  ;
-            add si, dx                  ;
-            pop bx                      ;
-            pop dx                      ;
-            push bx                     ; dx = width
-                                        ;----------------------
-            
-            jmp END_STYLE_PROCESSING     
+
+	   	pop dx                      ;----------------------
+	    	push si                     ; user style ptr or msg ptr
+	    	cmp dx, 9                   ;
+	    	je USER_STYLE_PROCESSING    ;
+					    ;   STYLE PROCESSING
+	    	mov si, offset STYLES       ;
+	    	mov bx, dx                  ;
+	    	shl dx, 3                   ;   dx *= 9
+	    	add dx, bx                  ;
+	    	add si, dx                  ;
+	    	pop bx                      ;
+	    	pop dx                      ;
+	    	push bx                     ; dx = width
+					    ;----------------------
+
+	    	jmp END_STYLE_PROCESSING     
 
 USER_STYLE_PROCESSING:
 
@@ -88,7 +88,7 @@ USER_STYLE_PROCESSING:
 END_STYLE_PROCESSING:
           
             push cx
-			call DrawFrame
+            call DrawFrame
             pop cx
             shr cx, 1
             shl cx, 1
@@ -118,7 +118,7 @@ END_STYLE_PROCESSING:
 
             call PrintMsg
 
-			EXIT
+	    EXIT
 
 ;=========================================================================
 ;=========================================================================
@@ -131,7 +131,7 @@ END_STYLE_PROCESSING:
 ; Destr: AL, BX, SI, DI
 ;-------------------------------------------------------------------------
 
-DrawFrame	proc
+DrawFrame   proc
 
             mov bx, cx              ; save CX
             mov cx, dx              ; 
@@ -158,8 +158,8 @@ DrawFrame	proc
             call DrawLine
             mov cx, bx
 
-			ret
-			endp
+	    ret
+	    endp
 
 ;=========================================================================
 ; Draw line
@@ -170,7 +170,7 @@ DrawFrame	proc
 ; Destr: AL, CX, DI, SI
 ;-------------------------------------------------------------------------
 
-DrawLine	proc
+DrawLine    proc
             
             shl di, 1
 
@@ -186,8 +186,8 @@ DrawLine	proc
 
             shr di, 1
 
-			ret
-			endp
+	    ret
+	    endp
 
 ;=========================================================================
 ; Get number from a string (until sym ' ')
